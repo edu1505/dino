@@ -1,0 +1,86 @@
+import java.util.Scanner;
+
+public class JogoDinossauro {
+    private static final int COMPRIMENTO_DO_TERRENO = 20;
+    private static final char DINOSSAURO = 'D';
+    private static final char OBSTACULO = 'X';
+    private static final char TERRENO = '_';
+
+    private static int posicaoDinossauro;
+    private static int posicaoObstaculo;
+    private static int pontuacao;
+    private static int nivel;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        inicializarJogo();
+
+        System.out.println("Bem-vindo ao Jogo do Dinossauro!");
+
+        while (true) {
+            exibirTerreno();
+            System.out.println("Nível: " + nivel + " | Pontuação: " + pontuacao);
+            System.out.println("Pressione 'Enter' para pular!");
+
+            if (scanner.nextLine().isEmpty()) {
+                atualizarJogo();
+            }
+        }
+    }
+
+    private static void inicializarJogo() {
+        posicaoDinossauro = 0;
+        posicaoObstaculo = COMPRIMENTO_DO_TERRENO - 1;
+        pontuacao = 0;
+        nivel = 1;
+    }
+
+    private static void exibirTerreno() {
+        for (int i = 0; i < COMPRIMENTO_DO_TERRENO; i++) {
+            char caractere = i == posicaoDinossauro ? DINOSSAURO : (i == posicaoObstaculo ? OBSTACULO : TERRENO);
+            System.out.print(caractere);
+        }
+        System.out.println();
+    }
+
+    private static void atualizarJogo() {
+        posicaoDinossauro++;
+
+        if (posicaoDinossauro == posicaoObstaculo) {
+            gameOver();
+        }
+
+        if (posicaoDinossauro == COMPRIMENTO_DO_TERRENO - 1) {
+            completouObstaculo();
+        }
+
+        if (posicaoDinossauro > posicaoObstaculo) {
+            gerarNovoObstaculo();
+        }
+    }
+
+    private static void gameOver() {
+        System.out.println("Game Over! Você atingiu um obstáculo. Pontuação final: " + pontuacao);
+        reiniciarJogo();
+    }
+
+    private static void completouObstaculo() {
+        System.out.println("Parabéns! Você ultrapassou o obstáculo. Pontuação: +" + nivel * 10);
+        pontuacao += nivel * 10;
+        subirDeNivel();
+    }
+
+    private static void subirDeNivel() {
+        nivel++;
+        System.out.println("Subiu para o nível " + nivel + "!");
+        posicaoObstaculo = COMPRIMENTO_DO_TERRENO - 1;
+    }
+
+    private static void gerarNovoObstaculo() {
+        posicaoObstaculo = COMPRIMENTO_DO_TERRENO + (int) (Math.random() * 10);
+    }
+
+    private static void reiniciarJogo() {
+        inicializarJogo();
+    }
+}
